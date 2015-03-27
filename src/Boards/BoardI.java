@@ -1,4 +1,6 @@
-package core;
+package Boards;
+
+import core.Piece;
 
 
 public abstract class BoardI {

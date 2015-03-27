@@ -1,4 +1,4 @@
-package core;
+package JTetrises;
 
 import java.awt.Dimension;
 
@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
+import core.Piece;
+import Boards.BoardI;
 import Brains.Brain;
 
 
@@ -24,7 +26,7 @@ public class JTetrisEO2 extends JTetrisEO1 {
 	
 	public JTetrisEO2(int pixels,BoardI board,Brain brain) {
 		super(pixels,board);
-		AI = brain.getInstance();
+		AI = brain;
 		// TODO Auto-generated constructor stub
 	}
 	

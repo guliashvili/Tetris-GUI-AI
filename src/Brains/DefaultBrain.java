@@ -2,7 +2,7 @@
 
 package Brains;
 
-import core.BoardI;
+import Boards.BoardI;
 
 /**
  Provided code.
@@ -59,10 +59,10 @@ public class DefaultBrain extends Brain {
     }
 
 
-	@Override
+/*	@Override
 	public Brain getInstance() {
 		return new DefaultBrain();
 	}
-
+*/
 }
 

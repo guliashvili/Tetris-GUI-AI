@@ -1,10 +1,13 @@
-package core;
+package Boards;
+
+import core.Piece;
+import core.TPoint;
 
 
 
 
 
-public class BoardOptimized extends core.BoardI{
+public class BoardOptimized extends Boards.BoardI{
 
 	
 	// Some ivars are stubbed out for you:

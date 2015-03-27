@@ -1,10 +1,12 @@
-package core;
+package JTetrises;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+
+import Boards.BoardI;
 
 @SuppressWarnings("serial")
 public class JTetrisEO1 extends JTetrisE {

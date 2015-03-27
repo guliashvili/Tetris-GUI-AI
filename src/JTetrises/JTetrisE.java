@@ -1,7 +1,8 @@
 // JTetris.java
-package core;
+package JTetrises;
 
 
+import core.*;
 import java.awt.*;
 
 import javax.swing.*;
@@ -10,6 +11,10 @@ import java.util.*;
 import java.awt.event.*;
 
 import javax.swing.event.*;
+
+import core.Piece;
+import Boards.BoardI;
+import Boards.BoardOptimized;
 
 import java.awt.Toolkit;
 
@@ -40,7 +45,9 @@ import java.awt.Toolkit;
  the piece in its new position.
 */
 
+@SuppressWarnings("serial")
 public class JTetrisE extends JComponent {
+	
 	// size of the board in blocks
 	public static final int WIDTH = 10;
 	public static final int HEIGHT = 20;
@@ -465,7 +472,11 @@ public class JTetrisE extends JComponent {
 		moved = (!failed && verb!=DOWN);
 	}
 
-
+	@Override
+	public void repaint(){
+		if(!Evolution.evolutionIsActiveSuckers) super.repaint();
+	}
+	
 
 	/**
 	 Given a piece and a position for the piece, generates

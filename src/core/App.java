@@ -3,10 +3,59 @@ package core;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
-import Brains.MariBrain;
+import Boards.BoardOptimized;
+import Brains.*;
+import JTetrises.*;
 
 public class App {
 
+	
+	private static void evol(){
+		Evolution e = new Evolution(new GioBrain(), new BoardOptimized(1, 1));
+		e.evoluate();
+		
+	}
+	private static void play(){
+		JTetrisEO2 tetris;
+		JFrame frame;
+		
+		
+		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),new GioBrain());
+		frame = JTetrisE.createFrame(tetris);
+		frame.setVisible(true);
+	}
+	private static void rat(){
+		JTetrisEO2 tetris;
+		JFrame frame;
+		Brain b;
+		
+		b = new GioBrain(0);
+		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),b);
+		frame = JTetrisE.createFrame(tetris);
+		frame.setVisible(true);
+		System.out.println(BrainRater.getAverageScore(tetris) );
+		
+		b = new GioBrain(1);
+		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),b);
+		frame = JTetrisE.createFrame(tetris);
+		frame.setVisible(true);
+		System.out.println(BrainRater.getAverageScore(tetris) );
+
+		b = new GioBrain(2);
+		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),b);
+		frame = JTetrisE.createFrame(tetris);
+		frame.setVisible(true);
+		System.out.println(BrainRater.getAverageScore(tetris) );
+		
+		b = new GioBrain(3);
+		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),b);
+		frame = JTetrisE.createFrame(tetris);
+		frame.setVisible(true);
+		System.out.println(BrainRater.getAverageScore(tetris) );
+		
+	
+	}
+	
 	/**
 	 Creates a frame with a JTetris.
 	*/
@@ -18,23 +67,15 @@ public class App {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception ignored) { }
+	
 		
-		JTetrisEO2 tetris;
-		JFrame frame;
+		
+		play();
 		
 		/*
-		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),new DefaultBrain());
-		frame = JTetrisE.createFrame(tetris);
-		//frame.setVisible(true);
-		
-		System.out.println(BrainRater.getAverageScore(tetris) );
-		*/
-		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),new MariBrain());
-		frame = JTetrisE.createFrame(tetris);
-		frame.setVisible(true);
-		
-		//System.out.println(BrainRater.getAverageScore(tetris) );
-		
+		* ;
+		 * 
+		 */
 		
 	}
 

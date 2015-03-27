@@ -1,14 +1,18 @@
 package Brains;
 
-import core.BoardI;
-
+import Boards.BoardI;
+/*
+ * idea Mariam Akhvlediani (Student of Martva :-D )
+ * Written by Me
+ * 
+ */
 public class MariBrain extends Brain {
 
 
-	@Override
+/*	@Override
 	public Brain getInstance() {
 		return new MariBrain();
-	}
+	}*/
 
 	@Override
 	public double rateBoard(BoardI board) {

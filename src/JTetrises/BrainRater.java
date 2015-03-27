@@ -1,12 +1,12 @@
-package core;
+package JTetrises;
+
 
 public class BrainRater {
-	private static final int N_TEST = 30;
+	private static final int N_TEST = 20;
 	
 	
-	public static String getAverageScore(JTetrisEO2 tetris){
+	public static double getAverageScore(JTetrisEO2 tetris){
 		tetris.brainMode.setSelected(true);
-		String ret = new String();
 		double score = 0;
 		
 		for(int i = 0; i < N_TEST; i++){
@@ -23,10 +23,9 @@ public class BrainRater {
 		}
 		score /= N_TEST;
 		
-		ret = tetris.AI.getClass().getName() + "  score = " + score;  
 		
 		
-		return ret;
+		return score;
 	}
 
 }

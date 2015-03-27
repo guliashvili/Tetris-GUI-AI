@@ -2,7 +2,7 @@
 
 package Brains;
 
-import core.BoardI;
+import Boards.BoardI;
 import core.Piece;
 
 public abstract class Brain{
@@ -81,7 +81,7 @@ public abstract class Brain{
         }
     }
     
-    public  abstract Brain getInstance();
+   // public  abstract Brain getInstance();
     
     /*
     A simple brain function.
