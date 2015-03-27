@@ -1,6 +1,8 @@
 // DefaultBrain.java
 
-package core;
+package Brains;
+
+import core.BoardI;
 
 /**
  Provided code.

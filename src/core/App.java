@@ -3,6 +3,8 @@ package core;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+import Brains.MariBrain;
+
 public class App {
 
 	/**

@@ -1,8 +1,11 @@
 // Brain.java -- the interface for Tetris brains
 
-package core;
+package Brains;
 
-public abstract class Brain {
+import core.BoardI;
+import core.Piece;
+
+public abstract class Brain{
     // Move is used as a struct to store a single Move
     // ("static" here means it does not have a pointer to an
     // enclosing Brain object, it's just in the Brain namespace.)

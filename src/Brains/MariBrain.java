@@ -1,4 +1,6 @@
-package core;
+package Brains;
+
+import core.BoardI;
 
 public class MariBrain extends Brain {
 

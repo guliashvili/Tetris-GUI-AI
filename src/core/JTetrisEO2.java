@@ -8,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
+import Brains.Brain;
+
 
 
 @SuppressWarnings("serial")
