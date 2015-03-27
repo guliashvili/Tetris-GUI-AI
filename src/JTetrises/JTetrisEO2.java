@@ -3,6 +3,7 @@ package JTetrises;
 import java.awt.Dimension;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,16 +20,22 @@ public class JTetrisEO2 extends JTetrisEO1 {
 
 	
 	protected JCheckBox brainMode;
-	protected Brain AI;
+	protected Brain AI,sec=null;
 	private JPanel little;
 	private JSlider adversary;
 	protected JLabel adversaryOk;
 	
+	
 	public JTetrisEO2(int pixels,BoardI board,Brain brain) {
 		super(pixels,board);
 		AI = brain;
-		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	protected void enableButtons() {
+		super.enableButtons();
+
+	};
 	
 	@Override
 	public JComponent createControlPanel(){
@@ -36,6 +43,8 @@ public class JTetrisEO2 extends JTetrisEO1 {
 		panel.add(new JLabel("Brain:")); 
 		brainMode = new JCheckBox("Brain active"); 
 		panel.add(brainMode);
+		
+
 		
 		little = new JPanel(); 
 		little.add(new JLabel("Adversary:"));
@@ -54,6 +63,7 @@ public class JTetrisEO2 extends JTetrisEO1 {
 	@Override 
 	public void tick(int verb) {
 		if(brainMode.isSelected() && verb == DOWN){
+			
 			playAi();
 		}
 		super.tick(verb);
@@ -99,8 +109,16 @@ public class JTetrisEO2 extends JTetrisEO1 {
 		
 		board.undo();
 		if(lastCount != count){
-			lastCount = count  ;
-			target = AI.bestMove(board, currentPiece, HEIGHT, target);
+			lastCount = count;
+			
+			Brain use = AI;
+			if(use == null){
+				try{
+					System.out.println(combo.getSelectedItem());
+					use = (Brain) Class.forName("Brains."+(String)combo.getSelectedItem()).newInstance();
+				}catch(Exception e){}
+			}
+			target = use.bestMove(board, currentPiece, HEIGHT, target);
 		}
 		if(target == null) return;
 		

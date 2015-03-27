@@ -3,6 +3,7 @@ package JTetrises;
 
 
 import core.*;
+
 import java.awt.*;
 
 import javax.swing.*;
@@ -70,6 +71,7 @@ public class JTetrisE extends JComponent {
 	protected Piece[] pieces;
 	
 	
+	
 	// The current piece in play or null
 	protected Piece currentPiece;
 	protected int currentX;
@@ -101,6 +103,7 @@ public class JTetrisE extends JComponent {
 	protected javax.swing.Timer timer;
 	protected JSlider speed;
 	protected JCheckBox testButton;
+	protected JComboBox combo;
 
 	
 	public final int DELAY = 400;	// milliseconds per tick
@@ -643,6 +646,11 @@ public class JTetrisE extends JComponent {
 			}
 		});
 		
+		//COMBO button
+		combo = new JComboBox<String>(new String[]{"GioBrain","MariBrain","DefaultBrain"});
+		combo.setMaximumSize(new Dimension(100,20));
+		panel.add(combo);
+		
 	
 		
 		enableButtons();
@@ -667,6 +675,7 @@ public class JTetrisE extends JComponent {
 		});
 		
 		testButton = new JCheckBox("Test sequence");
+		
 		panel.add(testButton);
 		
 		
