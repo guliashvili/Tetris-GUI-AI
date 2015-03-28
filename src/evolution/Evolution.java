@@ -1,4 +1,4 @@
-package core;
+package evolution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,13 +18,13 @@ import JTetrises.JTetrisEO2;
 public class Evolution{
 	 public static final long TOTAL_TIME = 600;
 	 public static final boolean DEBUG  = true;
-	 public static final int LIM = 20;
+	 public static final int LIM = 10;
 	 public static boolean evolutionIsActiveSuckers = false;
 	 private EvolutableBrain brain;
 	 private BoardI bord;
 	 
 	 
-	 Evolution(EvolutableBrain brn,BoardI bo) {
+	 public Evolution(EvolutableBrain brn,BoardI bo) {
 		brain = brn;
 		bord = bo;
 	}
@@ -54,14 +54,13 @@ public class Evolution{
 	
 	
 	
-	double[] evoluate(){
+	public double[] evoluate(){
 		evolutionIsActiveSuckers = true;
 		int n;
 		n = brain.getNCoefficient();
 		Container ret = null;
 		
-		JTetrisEO2 jt;
-		
+		BrainRaterOptimized br;
 		
 		LinkedList<Container> ar = new LinkedList<Evolution.Container>();
 		
@@ -76,9 +75,8 @@ public class Evolution{
 			for(int i = 0; i < coef.length; i++)  if((msk & (1<<i)) > 0) coef[i] = step;
 			brain.setCoefficients(coef);
 			
-			jt = new JTetrisEO2(16, bord, brain);
-			jt.createControlPanel();
-			ret = new Container(coef,BrainRater.getAverageScore(jt) );
+			br = new BrainRaterOptimized(bord, brain);
+			ret = new Container(coef,br.getAverageScore() );
 			ar.add(ret);
 				
 		}
@@ -117,10 +115,8 @@ public class Evolution{
 						
 						brain.setCoefficients(coef);
 						
-						jt = new JTetrisEO2(16, bord, brain);
-						jt.createControlPanel();
-						//JTetrisE.createFrame(jt).setVisible(true);
-						Container tmp = new Container(coef,BrainRater.getAverageScore(jt) );
+						br = new BrainRaterOptimized(bord, brain);
+						Container tmp = new Container(coef,br.getAverageScore() );
 						ar.add(tmp);
 					}					
 					ar.removeFirst();

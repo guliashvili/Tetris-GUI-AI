@@ -3,6 +3,8 @@ package core;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+import evolution.BrainRaterOptimized;
+import evolution.Evolution;
 import Boards.BoardOptimized;
 import Brains.*;
 import JTetrises.*;
@@ -20,40 +22,15 @@ public class App {
 		JFrame frame;
 		
 		
-		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),new GioBrain());
+		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),null);
 		frame = JTetrisE.createFrame(tetris);
 		frame.setVisible(true);
 	}
-	private static void rat(){
-		JTetrisEO2 tetris;
-		JFrame frame;
-		Brain b;
-		
-		b = new GioBrain(0);
-		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),b);
-		frame = JTetrisE.createFrame(tetris);
-		frame.setVisible(true);
-		System.out.println(BrainRater.getAverageScore(tetris) );
-		
-		b = new GioBrain(1);
-		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),b);
-		frame = JTetrisE.createFrame(tetris);
-		frame.setVisible(true);
-		System.out.println(BrainRater.getAverageScore(tetris) );
 
-		b = new GioBrain(2);
-		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),b);
-		frame = JTetrisE.createFrame(tetris);
-		frame.setVisible(true);
-		System.out.println(BrainRater.getAverageScore(tetris) );
-		
-		b = new GioBrain(3);
-		tetris = new JTetrisEO2(16,new BoardOptimized(1, 1),b);
-		frame = JTetrisE.createFrame(tetris);
-		frame.setVisible(true);
-		System.out.println(BrainRater.getAverageScore(tetris) );
-		
 	
+	private static void bro(){
+		BrainRaterOptimized b = new BrainRaterOptimized(new BoardOptimized(1, 1), new GioBrain());
+		System.out.print(b.getAverageScore());
 	}
 	
 	/**
@@ -69,13 +46,7 @@ public class App {
 		} catch (Exception ignored) { }
 	
 		
-		
 		play();
-		
-		/*
-		* ;
-		 * 
-		 */
 		
 	}
 

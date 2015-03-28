@@ -59,4 +59,10 @@ public class TPoint implements Comparator<TPoint>,Comparable<TPoint>{
 	public int compareTo(TPoint o) {
 		return compare(this,o);
 	}
+	
+	@Override 
+	public int hashCode(){
+		return x*100000 + y;
+	}
+	
 }

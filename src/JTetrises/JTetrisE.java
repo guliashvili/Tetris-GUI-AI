@@ -66,6 +66,7 @@ public class JTetrisE extends JComponent {
 	// (default false, so debugging is easier)
 	protected boolean DRAW_OPTIMIZE = false;
 	
+	
 	// Board data structures
 	protected BoardI board;
 	protected Piece[] pieces;
@@ -103,7 +104,7 @@ public class JTetrisE extends JComponent {
 	protected javax.swing.Timer timer;
 	protected JSlider speed;
 	protected JCheckBox testButton;
-	protected JComboBox combo;
+	protected JComboBox<String> combo;
 
 	
 	public final int DELAY = 400;	// milliseconds per tick
@@ -477,7 +478,7 @@ public class JTetrisE extends JComponent {
 
 	@Override
 	public void repaint(){
-		if(!Evolution.evolutionIsActiveSuckers) super.repaint();
+		super.repaint();
 	}
 	
 

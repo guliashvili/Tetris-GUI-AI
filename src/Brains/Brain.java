@@ -2,8 +2,14 @@
 
 package Brains;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+
 import Boards.BoardI;
 import core.Piece;
+import core.TPoint;
 
 public abstract class Brain{
     // Move is used as a struct to store a single Move
@@ -14,6 +20,8 @@ public abstract class Brain{
         public int y;
         public Piece piece;
         public double score;    // lower scores are better
+        
+        public LinkedList<Integer> list;
     }
     
     /**
@@ -27,59 +35,168 @@ public abstract class Brain{
      If the passed in move is non-null, it is used to hold the result
      (just to save the memory allocation).
     */
-    public    Brain.Move bestMove(BoardI board, Piece piece, int limitHeight, Brain.Move move){
+    
+    public    Brain.Move bestMove(BoardI board, Piece piece, int limitHeight, Brain.Move move,int currentX,int currentY){
         // Allocate a move object if necessary
         if (move==null) move = new Brain.Move();
         
         double bestScore = 1e20;
-        int bestX = 0;
-        int bestY = 0;
-        Piece bestPiece = null;
-        Piece current = piece;
-        
+        State bestState = null;
         board.commit();
         
-        // loop through all the rotations
-        while (true) {
-            final int yBound = limitHeight - current.getHeight() + 1;
-            final int xBound = board.getWidth() - current.getWidth()+1;
-            
-            // For current rotation, try all the possible columns
-            for (int x = 0; x<xBound; x++) {
-                int y = board.dropHeight(current, x);
-                if (y<yBound) {    // piece does not stick up too far
-                    int result = board.place(current, x, y);
-                    if (result <= BoardI.PLACE_ROW_FILLED) {
-                        if (result == BoardI.PLACE_ROW_FILLED) board.clearRows();
-                        
-                        double score = rateBoard(board);
-                        
-                        
-                        if (score<bestScore) {
-                            bestScore = score;
-                            bestX = x;
-                            bestY = y;
-                            bestPiece = current;
-                        }
-                    }
-                    
-                    board.undo();    // back out that play, loop around for the next
-                }
-            }
-            
-            current = current.fastRotation();
-            if (current == piece) break;    // break if back to original rotation
+        Map<State, StateTrans> hm = new HashMap<State, StateTrans>();
+        Queue<State> que = new LinkedList<State>();
+        
+        que.add(new State(piece,currentX,currentY,true));
+        hm.put(new State(piece,currentX,currentY,true), new StateTrans(null, -1));
+        
+        que.add(new State(piece,currentX,currentY,false));
+        hm.put(new State(piece,currentX,currentY,false), new StateTrans(null, -1));
+        
+        
+        while(!que.isEmpty()){
+        	State top = new State(que.peek());que.remove();
+        	
+        	
+    		for(int i = DOWN; i <= NOTHING; i++){
+    			if((i == DOWN) != (!top.myMove)) continue;
+    			
+        		State nxt = top.check(i, board);
+        		if(nxt == null){
+        			if(board.place(top.cur, top.X, top.Y) == BoardI.PLACE_ROW_FILLED) 
+        				board.clearRows();
+        			double score = rateBoard(board);
+        			board.undo();
+        			
+        			if(score < bestScore){
+        				bestScore = score;
+        				bestState = top;
+        			}
+        					
+        		}else{
+        			if(!hm.containsKey(nxt)){
+        				hm.put(nxt, new StateTrans(top, i));
+        				que.add(nxt);
+        			}
+        		}
+    		}
+        	
+        	
         }
         
-        if (bestPiece == null) return(null);    // could not find a play at all!
-        else {
-            move.x = bestX;
-            move.y = bestY;
-            move.piece = bestPiece;
-            move.score = bestScore;
-            return(move);
+        if(bestState == null) return null;
+        
+        
+        move.x = bestState.X;
+        move.y = bestState.Y;
+        move.piece = bestState.cur;
+        move.list = new LinkedList<Integer>();
+        
+        State cur = bestState;
+        while(true){
+        	StateTrans tmp = hm.get(cur);
+        	if(tmp.s == null) break;
+        	if(tmp.s.myMove) move.list.addFirst(tmp.trans);
+        	else move.list.addFirst(-1);
+        	
+        	cur = tmp.s;
+        }
+        
+        return move;
+        
+        
+             
+    }
+    
+    
+    private class State{
+    	public Piece cur;
+    	public int X,Y;
+    	public boolean myMove = true;
+    	
+    	@Override
+    	public int hashCode(){
+    		int hash = cur.hashCode() * 100000 + X * 343243 + Y ;
+    		if(myMove) hash += 25329953;
+    		return hash;
+    	}
+    	@Override
+    	public boolean equals(Object o){
+    		if(this == o) return true;
+    		if(!(o instanceof State)) return false;
+    		State other = (State) o;
+    		
+    		return (other.cur.equals(cur) && other.X == X && other.Y == Y && myMove == other.myMove);
+    	}
+    	public State(Piece a,int x,int y,boolean myMove){
+    		cur = a;
+    		X = x;
+    		Y = y;
+    		this.myMove = myMove;
+    	}
+    	public State(State a){
+    		cur = a.cur;
+    		X = a.X;
+    		Y = a.Y;
+    		myMove = a.myMove;
+    	}
+    	
+        public State check(int move,BoardI board){
+        	
+    		State tmp = new State(this);
+    		tmp.myMove = !tmp.myMove;
+    		if(move == NOTHING)
+    			return tmp;
+    		
+    		switch(move){
+    		case DOWN:
+    			tmp.Y--;
+    			break;
+    		case LEFT:
+    			tmp.X--;
+    			break;
+    		case RIGHT:
+    			tmp.X++;
+    			break;
+    		case ROTATE:
+    			tmp.cur = tmp.cur.fastRotation();
+    			break;
+    		default:
+    			throw new RuntimeException("illefal mmove");
+    		}
+    		
+    		boolean chk = board.place(tmp.cur, tmp.X, tmp.Y) <= BoardI.PLACE_ROW_FILLED;
+    		board.undo();
+    		
+    		if(chk)			
+    			return tmp;
+    		else
+    			return null;
+    		
         }
     }
+    
+    private class StateTrans{
+    	public State s;
+    	public int trans;
+    	
+    	public StateTrans(State s,int trans){
+    		this.trans = trans;
+    		this.s = s;
+    	}
+    };
+    
+    
+    public static final int DOWN = 0;
+    public static final int LEFT = 1;
+    public static final int RIGHT = 2;
+    public static final int ROTATE = 3;
+	public static final int NOTHING = 4;
+    
+    
+
+
+    
     
    // public  abstract Brain getInstance();
     

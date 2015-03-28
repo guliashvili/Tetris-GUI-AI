@@ -6,6 +6,7 @@ import Boards.BoardI;
 public class GioBrain extends EvolutableBrain {
 	double[] c;
 	
+	/*
 	public GioBrain(int i){
 		if(i == 0)
 			c= new double[]{500.0 ,500.0, 1250.0, 500.0, 1000.0} ;
@@ -15,9 +16,11 @@ public class GioBrain extends EvolutableBrain {
 			c = new double[]{500.0,375.0,1375.0,1250.0,875.0} ;
 		else
 			c = new double[]{640.625,281.25,1656.25,750.0,1000.0};
-	}
+		c= new double[]{250.0,218.75,1093.75,-1093.75,937.5 } ;
+	}*/
 	public GioBrain(){
-		c= new double[]{500.0 ,500.0, 1250.0, 500.0, 1000.0} ;
+		//c= new double[]{250.0,218.75,1093.75,-1093.75,937.5 } ;
+		c = new double[]{250.0, 250.0, 1437.5, 312.5, 1000.0, 812.5, 312.5, 500.0, 0.0, 1000.0 };
 	}
 	
 @Override
@@ -52,8 +55,10 @@ public class GioBrain extends EvolutableBrain {
 			
 		}
 		
-	
-		return onEmpties * c[0] + squareDif * c[1] + empty * c[2] + board.getMaxHeight() * c[3] + ysum * c[4];
+		if(board.getMaxHeight() > board.getHeight()*2/3)
+			return  onEmpties * c[5] + squareDif * c[6] + empty * c[7] + board.getMaxHeight() * c[8] + ysum * c[9];
+		else
+			return onEmpties * c[0] + squareDif * c[1] + empty * c[2] + board.getMaxHeight() * c[3] + ysum * c[4];
 	}
 	
 
@@ -71,7 +76,7 @@ public void setCoefficients(double[] c) {
 
 @Override
 public int getNCoefficient() {
-	return 5;
+	return 10;
 }
 	
 

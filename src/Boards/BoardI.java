@@ -17,6 +17,9 @@ public abstract class BoardI {
 	protected int maxHeight;
 	
 	
+
+	
+	
 	public abstract  BoardI getInstance(int width,int height);
 	
 	/**

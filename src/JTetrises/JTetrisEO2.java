@@ -63,8 +63,12 @@ public class JTetrisEO2 extends JTetrisEO1 {
 	@Override 
 	public void tick(int verb) {
 		if(brainMode.isSelected() && verb == DOWN){
-			
-			playAi();
+			int ret = playAi();
+			if(ret != -1) super.tick(ret);
+			try {
+				Thread.sleep(timer.getDelay());
+			} catch (InterruptedException e) {
+			}
 		}
 		super.tick(verb);
 	}
@@ -79,7 +83,14 @@ public class JTetrisEO2 extends JTetrisEO1 {
 			Brain.Move cur = null;
 			for(Piece p : Piece.getPieces()){
 				do{
-					cur = AI.bestMove(board, p, HEIGHT, cur);
+					Brain use = AI;
+					if(use == null){
+						try{
+							//System.out.println(combo.getSelectedItem());
+							use = (Brain) Class.forName("Brains."+(String)combo.getSelectedItem()).newInstance();
+						}catch(Exception e){}
+					}
+					cur = use.bestMove(board, p, HEIGHT, cur, currentX,currentY);
 					if(cur != null){
 						if(bst == null) 
 							bst = cur;
@@ -104,8 +115,8 @@ public class JTetrisEO2 extends JTetrisEO1 {
 	
 	private int lastCount = -1;
 	private Brain.Move  target = null;
-	private void playAi(){
-		if(currentPiece == null) return;
+	private int playAi(){
+		if(currentPiece == null) return -1;
 		
 		board.undo();
 		if(lastCount != count){
@@ -114,20 +125,52 @@ public class JTetrisEO2 extends JTetrisEO1 {
 			Brain use = AI;
 			if(use == null){
 				try{
-					System.out.println(combo.getSelectedItem());
+					//System.out.println(combo.getSelectedItem());
 					use = (Brain) Class.forName("Brains."+(String)combo.getSelectedItem()).newInstance();
 				}catch(Exception e){}
 			}
-			target = use.bestMove(board, currentPiece, HEIGHT, target);
+			target = use.bestMove(board, currentPiece, HEIGHT, target,currentX,currentY);
 		}
-		if(target == null) return;
+		if(target == null) return -1;
+			
+		if(target.list.isEmpty()) return -1;
 		
-		if(!target.piece.equals(currentPiece)){
-			currentPiece = currentPiece.fastRotation();
-		}else if(target.x < currentX){
-			currentX--;
-		}else if(target.x > currentX)
-			currentX++;
+		if(target.list.getFirst() == -1){
+			target.list.removeFirst();
+			return -1;
+			
+		}else{
+			int ret;
+			switch(target.list.getFirst()){
+			case Brain.DOWN:
+				ret = JTetrisE.DOWN;
+				break;
+			case Brain.LEFT:
+				ret = JTetrisE.LEFT;
+				break;
+			case Brain.RIGHT:
+				ret = JTetrisE.RIGHT;
+				break;
+			case Brain.ROTATE:
+				ret = JTetrisE.ROTATE;
+				break;
+			case Brain.NOTHING:
+				ret = -1;
+				break;
+			default:
+				throw new RuntimeException("invalid move");
+			}
+			target.list.removeFirst();
+			if(!target.list.isEmpty()){
+				if(target.list.getFirst() != -1) throw new RuntimeException("something wrong");
+				target.list.removeFirst();
+			}
+			return ret;
+		}
+		
+	
 		
 	}
+
+	
 }
