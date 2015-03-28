@@ -19,7 +19,9 @@ public abstract class BoardI {
 	
 
 	
-	
+	/*
+	 * returns new instance of board
+	 */
 	public abstract  BoardI getInstance(int width,int height);
 	
 	/**

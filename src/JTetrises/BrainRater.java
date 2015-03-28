@@ -4,7 +4,9 @@ package JTetrises;
 public class BrainRater {
 	private static final int N_TEST = 20;
 	
-	
+	/*
+	 * plays N_TEST time with that brain and returns mean score
+	 */
 	public static double getAverageScore(JTetrisEO2 tetris){
 		tetris.brainMode.setSelected(true);
 		double score = 0;

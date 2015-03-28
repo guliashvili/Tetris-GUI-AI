@@ -115,6 +115,9 @@ public class JTetrisEO2 extends JTetrisEO1 {
 	
 	private int lastCount = -1;
 	private Brain.Move  target = null;
+	/*
+	 * plays with AI
+	 */
 	private int playAi(){
 		if(currentPiece == null) return -1;
 		
