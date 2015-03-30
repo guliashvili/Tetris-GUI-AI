@@ -1,11 +1,19 @@
 package Brains;
 
+import java.util.ArrayList;
+import java.util.Random;
+
+import core.Piece;
+import evolution.Chromosome;
 import Boards.BoardI;
 
-
 public class GioBrain extends EvolutableBrain {
-	double[] c;
-	
+
+	private Chromosome cro;
+	private static final Random rnd;
+	static {
+		rnd = new Random();
+	}
 	/*
 	public GioBrain(int i){
 		if(i == 0)
@@ -20,64 +28,64 @@ public class GioBrain extends EvolutableBrain {
 	}*/
 	public GioBrain(){
 		//c= new double[]{250.0,218.75,1093.75,-1093.75,937.5 } ;
-		c = new double[]{250.0, 250.0, 1437.5, 312.5, 1000.0, 812.5, 312.5, 500.0, 0.0, 1000.0 };
+		cro = new Chromosome( new double[]{0.0, 0.0, 0.0, 1.0});
+	}
+	
+	
+	private double rate(BoardI board){
+		/*
+		 * 1 - squareDif
+		 * 2 - empty
+		 * 3 - getMaxHeight
+		 * 4 - ysum
+		 */
+				double squareDif = 0;
+				double empty = 0;
+				double ysum = 0;
+				for(int i = 0; i < board.getWidth(); i++){
+					for(int j = 0; j < board.getColumnHeight(i); j++){
+						
+						if(!board.getGrid(i, j))
+							 empty++;
+						ysum += j;
+					}
+					
+					
+					if(i > 0)
+						squareDif += board.getColumnHeight(i) - board.getColumnHeight(i-1);
+					
+					
+				}
+				
+			return  squareDif * cro.ar[0] + empty * cro.ar[1] + board.getMaxHeight() * cro.ar[2] + ysum * cro.ar[3];
+		
 	}
 	
 @Override
-
 	public double rateBoard(BoardI board){
-/*
- * 0 - onEmpties
- * 1 - squareDif
- * 2 - empty
- * 3 - getMaxHeight
- * 4 - ysum
- */
-		double onEmpties = 0;
-		double squareDif = 0;
-		double empty = 0;
-		double ysum = 0;
-		for(int i = 0; i < board.getWidth(); i++){
-			boolean wasEmpty= false;
-			for(int j = 0; j < board.getColumnHeight(i); j++){
-				if(board.getGrid(i, j) && wasEmpty)
-					onEmpties++;
-				else if(!board.getGrid(i, j))
-					wasEmpty = true;
-				if(!board.getGrid(i, j)) empty++;
-				ysum += j;
-			}
+		double mathMean = 0;
+		for(int i = 0 ; i < Piece.getPieces().length/3; i++){
+			double mn = 1010101000;
+			Piece p = Piece.getPieces()[rnd.nextInt(Piece.getPieces().length)];
+			ArrayList<BoardI> ar = getAllMoves(board.getInstance(board), p,
+												(board.getWidth() - p.getWidth())/2,
+												board.getHeight() - p.getHeight());
 			
+			for(BoardI b : ar) mn = Math.min(mn, rate(b));
 			
-			if(i > 0)
-				squareDif += Math.pow(board.getColumnHeight(i) - board.getColumnHeight(i-1), 2);
-			
+			mathMean += mn * 1.0 / Piece.getPieces().length;
 			
 		}
 		
-		if(board.getMaxHeight() > board.getHeight()*2/3)
-			return  onEmpties * c[5] + squareDif * c[6] + empty * c[7] + board.getMaxHeight() * c[8] + ysum * c[9];
-		else
-			return onEmpties * c[0] + squareDif * c[1] + empty * c[2] + board.getMaxHeight() * c[3] + ysum * c[4];
+		return mathMean;
 	}
 	
-
-/*@Override
-	public EvolutableBrain getInstance() {
-		return new GioBrain();
+	public int getChromosomeLength(){
+		return 4;
 	}
-*/
-
-@Override
-public void setCoefficients(double[] c) {
-	this.c = c.clone();
-}
-
-
-@Override
-public int getNCoefficient() {
-	return 10;
-}
+	public void setChromosome(Chromosome chromosom){
+		cro = chromosom;
+	}
 	
 
 }

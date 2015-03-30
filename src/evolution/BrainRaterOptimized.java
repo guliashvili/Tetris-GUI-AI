@@ -1,24 +1,11 @@
 package evolution;
 
-
-
-
-import core.*;
-
-import java.awt.*;
-
-import javax.swing.*;
-
 import java.util.*;
-import java.awt.event.*;
-
-import javax.swing.event.*;
 
 import core.Piece;
 import Boards.BoardI;
 import Boards.BoardOptimized;
 import Brains.Brain;
-import Brains.EvolutableBrain;
 import JTetrises.JTetrisE;
 
 import java.awt.Toolkit;
@@ -52,7 +39,7 @@ the piece in its new position.
 
 public class BrainRaterOptimized {
 	
-	public static final int N_TEST = 5;
+	public static final int N_TEST = 1 ;
 	
 	// size of the board in blocks
 	public static final int WIDTH = 10;
@@ -95,14 +82,14 @@ public class BrainRaterOptimized {
 	// Controls
 	protected int score;
 
-	protected EvolutableBrain AI;
+	protected Brain AI;
 	
 	
 	/**
 	 * Creates a new JTetris where each tetris square
 	 * is drawn with the given number of pixels.
 	 */
-	public BrainRaterOptimized(BoardI board, EvolutableBrain br) {
+	public BrainRaterOptimized(BoardI board, Brain br) {
 		AI = br;
 		gameOn = false;
 		

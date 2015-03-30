@@ -2,14 +2,16 @@
 
 package Brains;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import Boards.BoardI;
 import core.Piece;
-import core.TPoint;
 
 public abstract class Brain{
     // Move is used as a struct to store a single Move
@@ -36,7 +38,7 @@ public abstract class Brain{
      (just to save the memory allocation).
     */
     
-    public    Brain.Move bestMove(BoardI board, Piece piece, int limitHeight, Brain.Move move,int currentX,int currentY){
+    public  Brain.Move bestMove(BoardI board, Piece piece, int limitHeight, Brain.Move move,int currentX,int currentY){
         // Allocate a move object if necessary
         if (move==null) move = new Brain.Move();
         
@@ -63,14 +65,16 @@ public abstract class Brain{
     			
         		State nxt = top.check(i, board);
         		if(nxt == null){
-        			if(board.place(top.cur, top.X, top.Y) == BoardI.PLACE_ROW_FILLED) 
-        				board.clearRows();
-        			double score = rateBoard(board);
-        			board.undo();
+        			if(i == DOWN){
+        				if(board.place(top.cur, top.X, top.Y) == BoardI.PLACE_ROW_FILLED) 
+        					board.clearRows();
+        				double score = rateBoard(board);
+        				board.undo();
         			
-        			if(score < bestScore){
-        				bestScore = score;
-        				bestState = top;
+        				if(score < bestScore){
+        					bestScore = score;
+        					bestState = top;
+        				}
         			}
         					
         		}else{
@@ -103,11 +107,59 @@ public abstract class Brain{
         }
         
         return move;
-        
-        
              
     }
-    
+    public  ArrayList<BoardI> getAllMoves(BoardI board, Piece piece, int currentX,int currentY){
+        // Allocate a move object if necessary
+        ArrayList<BoardI> ret = new ArrayList<BoardI>();
+        board.commit();
+        
+        
+        Set<Integer> hm = new HashSet<Integer>();
+        Queue<State> que = new LinkedList<State>();
+        
+        que.add(new State(piece,currentX,currentY,true));
+        hm.add(new State(piece,currentX,currentY,true).hashCode());
+        
+        que.add(new State(piece,currentX,currentY,false));
+        hm.add(new State(piece,currentX,currentY,false).hashCode());
+        
+        
+        while(!que.isEmpty()){
+        	State top = new State(que.peek());que.remove();
+        	
+        	
+    		for(int i = DOWN; i <= NOTHING; i++){
+    			if((i == DOWN) != (!top.myMove)) continue;
+    			
+        		State nxt = top.check(i, board);
+        		if(nxt == null){
+        			if(i == DOWN){
+        				if(board.place(top.cur, top.X, top.Y) == BoardI.PLACE_ROW_FILLED) 
+        					board.clearRows();
+        				
+        				ret.add(board.getInstance(board));
+        				
+        				board.undo();
+        			
+        				
+        			}
+        					
+        		}else{
+        			if(!hm.contains(nxt.hashCode())){
+        				hm.add(nxt.hashCode());
+        				que.add(nxt);
+        			}
+        		}
+    		}
+        	
+        	
+        }
+        
+        return ret;
+             
+    }
+  
     
     private class State{
     	public Piece cur;

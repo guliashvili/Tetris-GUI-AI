@@ -23,7 +23,9 @@ public abstract class BoardI {
 	 * returns new instance of board
 	 */
 	public abstract  BoardI getInstance(int width,int height);
+	public abstract  BoardI getInstance(BoardI board);
 	
+	protected abstract void placeUnsafe(Piece piece, int x, int y);
 	/**
 	 Returns the width of the board in blocks.
 	*/

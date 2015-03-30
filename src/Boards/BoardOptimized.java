@@ -14,9 +14,7 @@ public class BoardOptimized extends Boards.BoardI{
 	
 	protected database db;
 	protected boolean committed;
-	protected boolean DEBUG = false;
-	
-
+	protected boolean DEBUG = true;
 	
 	
 	private class database{
@@ -31,7 +29,7 @@ public class BoardOptimized extends Boards.BoardI{
 		boolean saved = false;
 		
 		public database(int width,int height){
-			g = new boolean[height][width];
+			g = new boolean[height][1];
 			rW = new int[height];
 			cH = new int[width];
 			stk = new TPoint[width*height];
@@ -233,6 +231,34 @@ public class BoardOptimized extends Boards.BoardI{
 		return result;
 	}
 	
+	protected void placeUnsafe(Piece piece, int x, int y) {
+		
+		committed = false;
+		db.place(piece,x,y);
+		
+		if(x<0 || y<0 || x + piece.getWidth() > this.getWidth() || y + piece.getHeight() > this.getHeight()) {
+			
+		}
+		else 
+			for(TPoint pp : piece.getBody()){
+				TPoint p = new TPoint(pp);
+				p.x += x;
+				p.y += y;
+				if(getGridUnsafe(p.x, p.y)){
+					
+					break;
+				}else {
+					setGrid(p.x, p.y, true);
+					setRowWidth(p.y, getRowWidth(p.y) + 1);
+					setColumnHeight(p.x,Math.max(getColumnHeight(p.x),p.y + 1));
+					setMaxHeight(Math.max(getMaxHeight(), getColumnHeight(p.x)));
+					
+				}
+				
+			}
+		
+	}
+	
 	
 
 	
@@ -357,8 +383,37 @@ public class BoardOptimized extends Boards.BoardI{
 		return new BoardOptimized(width, height);
 	}
 	
+	public   BoardI getInstance(BoardI boardd){
+		BoardOptimized board = (BoardOptimized) boardd;
+		BoardOptimized ret = new BoardOptimized(board.getWidth(),board.getHeight());
+		
+		
+		ret.committed = true;
+		System.arraycopy(board.columnHeight, 0, ret.columnHeight, 0, board.columnHeight.length);
+		for(int i = 0 ; i < board.grid.length; i++)
+			System.arraycopy(board.grid[i], 0, ret.grid[i], 0, ret.grid[i].length);
+		System.arraycopy(board.rowWidth, 0, ret.rowWidth, 0, board.rowWidth.length);
+		ret.maxHeight = board.maxHeight;
+		
+		System.arraycopy(ret.columnHeight, 0, ret.db.cH,0, ret.columnHeight.length);
+		System.arraycopy(ret.grid, 0,ret.db.g, 0, ret.grid.length);
+		System.arraycopy(ret.rowWidth, 0, ret.db.rW, 0, ret.rowWidth.length);
+		ret.db.mH = ret.maxHeight;
+
+		
+		/*
+		
+		
+		for(int i = 0; i < board.getWidth(); i++)
+			for(int j = 0; j < board.getHeight(); j++)
+				if(board.getGridUnsafe(i, j)){
+					ret.placeUnsafe(oneSquare, i, j);
+					ret.commit();
+				}
+		*/
+		return ret;
+	}
 
 
-	
 
 }

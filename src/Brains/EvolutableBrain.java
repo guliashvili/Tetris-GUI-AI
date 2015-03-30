@@ -1,6 +1,7 @@
 package Brains;
 
-import Boards.BoardI;
+import evolution.Chromosome;
+
 
 public abstract class EvolutableBrain extends Brain {
 	/*
@@ -8,9 +9,7 @@ public abstract class EvolutableBrain extends Brain {
 	 * c is coefficients for different variables
 	 * so brain will return sum(fi(board)*c[i])
 	 */
-	public abstract  void setCoefficients(double[] c);
-	public  abstract int getNCoefficient();
+	public abstract  void setChromosome(Chromosome chromosome);
+	public  abstract int getChromosomeLength();
 	
-	//@Override
-	//public abstract EvolutableBrain getInstance(); 
 }
